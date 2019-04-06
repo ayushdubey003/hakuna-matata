@@ -31,6 +31,7 @@ public class Hotels extends AppCompatActivity {
 
     private ArrayAdapter<Hotel> adapter;
     private ListView listView;
+    SharedPreferences mSharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,7 +121,12 @@ public class Hotels extends AppCompatActivity {
                                     case DialogInterface.BUTTON_POSITIVE:
                                         SharedPreferences.Editor editor = preferences.edit();
                                         editor.putBoolean(((TextView)finalConvertView.findViewById(R.id.name)).getText().toString(), true);
-                                        editor.commit();
+                                        //editor.commit();
+                                        mSharedPreferences=getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
+                                        double lati=(double)mSharedPreferences.getFloat("latitude",(float)0.0);
+                                        double longi=(double)mSharedPreferences.getFloat("longitude",(float)0.0);
+                                        int abs = Script.doSome("A",lati,longi);
+                                        Log.e("aa",""+abs);
                                         Toast.makeText(Hotels.this, "Processing your Order", Toast.LENGTH_SHORT).show();
                                         break;
 
