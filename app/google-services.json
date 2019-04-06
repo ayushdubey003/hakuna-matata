@@ -1,0 +1,44 @@
+{
+  "project_info": {
+    "project_number": "911040136374",
+    "firebase_url": "https://hakuna-151c3.firebaseio.com",
+    "project_id": "hakuna-151c3",
+    "storage_bucket": "hakuna-151c3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:911040136374:android:e3613b344700f317",
+        "android_client_info": {
+          "package_name": "in.nitjsrac.pcon.hakunamatata"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "911040136374-aj3fpl0hajprjek09e64u2oruigefm2n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.nitjsrac.pcon.hakunamatata",
+            "certificate_hash": "04c75edc62ad72061b5861b99f9ecff030f0f71a"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALGQnXFRsoG_xM0o5uKUs2O8WG6i4MbfA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "911040136374-0m85425prn31fldlajb092ao40v1ik3e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
