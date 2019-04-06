@@ -21,6 +21,12 @@ import android.widget.Toast;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +38,8 @@ public class Hotels extends AppCompatActivity {
     private ArrayAdapter<Hotel> adapter;
     private ListView listView;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,13 +48,59 @@ public class Hotels extends AppCompatActivity {
         listView = findViewById(R.id.list);
         Hotel hotel = new Hotel("", "","", "Hotel");
         ArrayList<Hotel> arrayList = new ArrayList<>();
-        arrayList.add(hotel);
+        //arrayList.add(hotel);
         adapter = new MyAdapter(this, 0, arrayList);
         listView.setAdapter(adapter);
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference reference = database.getReference().child("hotel");
+        reference.keepSynced(true);
+
+        reference.addValueEventListener(new ValueEventListener() {
+            ArrayList<FireBaseHotel> arrayList1 = new ArrayList<>();
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()){
+                    try {
+                        for(DataSnapshot ds: dataSnapshot.getChildren())
+                        {
+                            FireBaseHotel q=ds.getValue(FireBaseHotel.class);
+                            arrayList1.add(q);
+                            //Toast.makeText(Hotels.this, q.name, Toast.LENGTH_LONG).show();
+                        }
+
+                        add(arrayList1);
+
+                    } catch (Exception e){
+                        //Toast.makeText(FAQsActivity.this, "Oops! Something went wrong",
+                        //      Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public void add(ArrayList<FireBaseHotel> t){
+        adapter.clear();
+        for(int i = 0;i < t.size();i ++){
+            FireBaseHotel hotel = t.get(i);
+            //Log.e("jhbs", hotel.name);
+            Hotel k = new Hotel("", "","","");
+            k.setName(hotel.name);
+            k.lat = hotel.lat;
+            k.longi = hotel.longi;
+            adapter.add(k);
+        }
     }
 
     private class Hotel{
         String imageurl, price, averagetime, name;
+        double lat, longi;
 
         public Hotel(String imageurl, String price, String averagetime, String name){
             this.imageurl = imageurl;
@@ -96,7 +150,7 @@ public class Hotels extends AppCompatActivity {
 
         @NonNull
         @Override
-        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             if(convertView == null)
                 convertView = LayoutInflater.from(Hotels.this).inflate(R.layout.hotel, null, false);
 
@@ -121,6 +175,13 @@ public class Hotels extends AppCompatActivity {
                                         SharedPreferences.Editor editor = preferences.edit();
                                         editor.putBoolean(((TextView)finalConvertView.findViewById(R.id.name)).getText().toString(), true);
                                         editor.commit();
+                                        double lat = getItem(position).lat;
+                                        double longi = getItem(position).longi;
+                                        //int x = Script.doSome();
+                                        //if(x==0){
+
+                                        //}
+
                                         Toast.makeText(Hotels.this, "Processing your Order", Toast.LENGTH_SHORT).show();
                                         break;
 
