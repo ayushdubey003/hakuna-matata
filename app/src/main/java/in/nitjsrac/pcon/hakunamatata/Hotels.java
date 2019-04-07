@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
@@ -40,14 +41,13 @@ public class Hotels extends AppCompatActivity {
     SharedPreferences mSharedPreferences;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hotels);
 
         listView = findViewById(R.id.list);
-        Hotel hotel = new Hotel("", "","", "Hotel");
+        Hotel hotel = new Hotel("", "", "", "Hotel");
         ArrayList<Hotel> arrayList = new ArrayList<>();
         //arrayList.add(hotel);
         adapter = new MyAdapter(this, 0, arrayList);
@@ -59,20 +59,20 @@ public class Hotels extends AppCompatActivity {
 
         reference.addValueEventListener(new ValueEventListener() {
             ArrayList<FireBaseHotel> arrayList1 = new ArrayList<>();
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()){
+                if (dataSnapshot.exists()) {
                     try {
-                        for(DataSnapshot ds: dataSnapshot.getChildren())
-                        {
-                            FireBaseHotel q=ds.getValue(FireBaseHotel.class);
+                        for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                            FireBaseHotel q = ds.getValue(FireBaseHotel.class);
                             arrayList1.add(q);
                             //Toast.makeText(Hotels.this, q.name, Toast.LENGTH_LONG).show();
                         }
 
                         add(arrayList1);
 
-                    } catch (Exception e){
+                    } catch (Exception e) {
                         //Toast.makeText(FAQsActivity.this, "Oops! Something went wrong",
                         //      Toast.LENGTH_SHORT).show();
                     }
@@ -86,12 +86,12 @@ public class Hotels extends AppCompatActivity {
         });
     }
 
-    public void add(ArrayList<FireBaseHotel> t){
+    public void add(ArrayList<FireBaseHotel> t) {
         adapter.clear();
-        for(int i = 0;i < t.size();i ++){
+        for (int i = 0; i < t.size(); i++) {
             FireBaseHotel hotel = t.get(i);
             //Log.e("jhbs", hotel.name);
-            Hotel k = new Hotel("", "","","");
+            Hotel k = new Hotel("", "", "", "");
             k.setName(hotel.name);
             k.lat = hotel.lat;
             k.longi = hotel.longi;
@@ -99,11 +99,11 @@ public class Hotels extends AppCompatActivity {
         }
     }
 
-    private class Hotel{
+    private class Hotel {
         String imageurl, price, averagetime, name;
         double lat, longi;
 
-        public Hotel(String imageurl, String price, String averagetime, String name){
+        public Hotel(String imageurl, String price, String averagetime, String name) {
             this.imageurl = imageurl;
             this.price = price;
             this.averagetime = averagetime;
@@ -143,7 +143,7 @@ public class Hotels extends AppCompatActivity {
         }
     }
 
-    private class MyAdapter extends ArrayAdapter<Hotel>{
+    private class MyAdapter extends ArrayAdapter<Hotel> {
 
         public MyAdapter(@NonNull Context context, int resource, @NonNull List<Hotel> objects) {
             super(context, resource, objects);
@@ -152,11 +152,11 @@ public class Hotels extends AppCompatActivity {
         @NonNull
         @Override
         public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            if(convertView == null)
+            if (convertView == null)
                 convertView = LayoutInflater.from(Hotels.this).inflate(R.layout.hotel, null, false);
 
-            ((TextView)(convertView.findViewById(R.id.price))).setText("Rs. " + (200 + (int)(Math.random() * 10) * 10));
-            ((TextView)convertView.findViewById(R.id.name)).setText(getItem(position).name);
+            ((TextView) (convertView.findViewById(R.id.price))).setText("Rs. " + (200 + (int) (Math.random() * 10) * 10));
+            ((TextView) convertView.findViewById(R.id.name)).setText(getItem(position).name);
             //((TextView)convertView.findViewById(R.id.averagetime)).setText(getItem(position).averagetime);
 
             final View finalConvertView = convertView;
@@ -164,35 +164,63 @@ public class Hotels extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     final SharedPreferences preferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-                    if(preferences.contains(((TextView)finalConvertView.findViewById(R.id.name)).getText().toString())){
+                    if (preferences.contains(((TextView) finalConvertView.findViewById(R.id.name)).getText().toString())) {
                         Toast.makeText(Hotels.this, "Order Pending", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
+                    } else {
                         DialogInterface.OnClickListener dialogListener = new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                switch (which){
+                                switch (which) {
                                     case DialogInterface.BUTTON_POSITIVE:
                                         SharedPreferences.Editor editor = preferences.edit();
-                                        editor.putBoolean(((TextView)finalConvertView.findViewById(R.id.name)).getText().toString(), true);
-<<<<<<< HEAD
+                                        editor.putBoolean(((TextView) finalConvertView.findViewById(R.id.name)).getText().toString(), true);
+
                                         //editor.commit();
-                                        mSharedPreferences=getSharedPreferences("MyPrefs",Context.MODE_PRIVATE);
-                                        double lati=(double)mSharedPreferences.getFloat("latitude",(float)0.0);
-                                        double longi=(double)mSharedPreferences.getFloat("longitude",(float)0.0);
-                                        int abs = Script.doSome("A",lati,longi);
-                                        Log.e("aa",""+abs);
-=======
-                                        editor.commit();
-                                        double lat = getItem(position).lat;
-                                        double longi = getItem(position).longi;
-                                        //int x = Script.doSome();
-                                        //if(x==0){
+                                        mSharedPreferences = getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
+                                        double lati = (double) mSharedPreferences.getFloat("latitude", (float) 0.0);
+                                        double longi = (double) mSharedPreferences.getFloat("longitude", (float) 0.0);
 
-                                        //}
+                                        //  Log.e("aa",""+abs);
 
->>>>>>> master
-                                        Toast.makeText(Hotels.this, "Processing your Order", Toast.LENGTH_SHORT).show();
+                                        double latx = getItem(position).lat;
+                                        double longix = getItem(position).longi;
+
+                                        final int num = (int) (Math.random() * 1000000);
+                                        Script.doSome(num, latx, longix, lati, longi);
+                                        Handler handler = new Handler();
+                                        handler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+//int x = Script.doSome();
+                                                //if(x==0){
+
+                                                //}
+                                        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+                                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                                long a=(long)dataSnapshot.child(Integer.toString(num)).getValue();
+                                               if(a==0)
+                                                    Toast.makeText(Hotels.this, "Restaurant not available", Toast.LENGTH_SHORT).show();
+                                                    else
+                                                    Toast.makeText(Hotels.this, "Food Ordered", Toast.LENGTH_SHORT).show();
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                            }
+                                        });
+
+                                            }
+                                        },3000);
+                                       // Toast.makeText(Hotels.this, "Food Ordered", Toast.LENGTH_SHORT).show();
+
+                                       /* if(abs==0)
+                                        Toast.makeText(Hotels.this, "Restaurant not available", Toast.LENGTH_SHORT).show();
+                                        else{
+                                            Toast.makeText(Hotels.this, "Food Ordered", Toast.LENGTH_SHORT).show();
+                                        }*/
                                         break;
 
                                     case DialogInterface.BUTTON_NEGATIVE:

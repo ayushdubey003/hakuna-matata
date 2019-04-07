@@ -29,7 +29,7 @@ public class Script {
         return (int) (Math.round(AVERAGE_RADIUS_OF_EARTH_M * c));
     }
 
-    public static int doSome(final String restaurant,final double l1, final double l2){
+    public static void doSome(final int sss,final double lati, final double longi,final double l1, final double l2){
 
      /*   final double l1=22.1799;
         final double l2=86.1866;*/
@@ -42,13 +42,7 @@ public class Script {
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                double lati,longi;
-                String x1,y;
-                x1=  dataSnapshot.child("hotel").child(restaurant).child("lat").getValue().toString();
-                y =  dataSnapshot.child("hotel").child(restaurant).child("longi").getValue().toString();
 
-                lati = Double.parseDouble(x1);
-                longi = Double.parseDouble(y);
 
                 int dist = calculateDistanceInMeter(l1,l2,lati,longi);
 
@@ -64,7 +58,8 @@ public class Script {
                         databaseReference.child("boyz").child(Character.toString(i)).child("long").setValue(l2);
                         databaseReference.child("boyz").child(Character.toString(i)).child("num").setValue(1);
                         databaseReference.child("boyz").child(Character.toString(i)).child("assigned").setValue(1);
-                        x[0] = (int) i - 64;
+                        databaseReference.child(Integer.toString(sss)).setValue((int) i - 64);
+                        f=1;
                         break;
                     }
                     if(ass ==1){
@@ -88,11 +83,17 @@ public class Script {
                         databaseReference.child("boyz").child(Character.toString(i)).child("lat").setValue(c1);
                         databaseReference.child("boyz").child(Character.toString(i)).child("long").setValue(c2);
                         databaseReference.child("boyz").child(Character.toString(i)).child("num").setValue(num+1);
-                        x[0] = (int) i - 64;
+                        databaseReference.child(Integer.toString(sss)).setValue((int) i - 64);
+                        f=1;
+
                         break;
 
                     }
                 }
+                if(f==0){
+                    databaseReference.child(Integer.toString(sss)).setValue(0);
+                }
+
             }
 
             @Override
@@ -101,6 +102,6 @@ public class Script {
             }
         });
 
-        return x[0];
+     //   return x[0];
     }
 }
